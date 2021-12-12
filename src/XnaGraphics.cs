@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MiswGame2008
 {
-    public class SdlGraphics : IGraphics, IDisposable
+    public class XnaGraphics : IGraphics, IDisposable
     {
         private MiswGame2008 app;
 
@@ -16,7 +16,7 @@ namespace MiswGame2008
 
         private Color color;
 
-        public SdlGraphics(MiswGame2008 app)
+        public XnaGraphics(MiswGame2008 app)
         {
             this.app = app;
 
@@ -121,6 +121,7 @@ namespace MiswGame2008
             sprite.Draw(
                 singlePixelWhite,
                 new Rectangle(0, 0, 640, 480),
+                new Rectangle(0, 0, 1, 1),
                 color);
         }
 
@@ -264,8 +265,7 @@ namespace MiswGame2008
 
         public void DrawCharacter(char c, int x, int y)
         {
-            /*
-            ITexture texture = textures[(int)Image.Hud];
+            var texture = textures[(int)Image.Hud];
             int u, v;
             if ('0' <= c && c <= '9')
             {
@@ -310,9 +310,14 @@ namespace MiswGame2008
                         return;
                 }
             }
-            Rect srcRect = new Rect((float)u, (float)v, (float)(u + 16), (float)(v + 16));
-            screen.Blt(texture, x, y, srcRect);
-            */
+
+            //Rect srcRect = new Rect((float)u, (float)v, (float)(u + 16), (float)(v + 16));
+            //screen.Blt(texture, x, y, srcRect);
+            sprite.Draw(
+                texture,
+                new Rectangle(x, y, 16, 16),
+                new Rectangle(u, v, 16, 16),
+                color);
         }
 
         public void DrawString(string s, int x, int y)

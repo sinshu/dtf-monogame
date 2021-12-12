@@ -3,14 +3,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MiswGame2008
 {
-    public class SdlInput : IInput, IDisposable
+    public class XnaInput : IInput, IDisposable
     {
         private MiswGame2008 app;
 
         private KeyboardState curr;
         private KeyboardState prev;
 
-        public SdlInput(MiswGame2008 app)
+        public XnaInput(MiswGame2008 app)
         {
             this.app = app;
         }

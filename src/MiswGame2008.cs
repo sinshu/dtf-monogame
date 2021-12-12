@@ -9,9 +9,9 @@ namespace MiswGame2008
 
         private GraphicsDeviceManager graphics;
 
-        private SdlGraphics video;
-        private SdlInput input;
-        private SdlAudio audio;
+        private XnaGraphics video;
+        private XnaInput input;
+        private XnaAudio audio;
 
         private GameManager manager;
 
@@ -38,9 +38,9 @@ namespace MiswGame2008
 
         protected override void LoadContent()
         {
-            video = new SdlGraphics(this);
-            input = new SdlInput(this);
-            audio = new SdlAudio(this);
+            video = new XnaGraphics(this);
+            input = new XnaInput(this);
+            audio = new XnaAudio(this);
 
             manager = new GameManager(audio, startLevel);
             manager.LoadScoreDataFromFile("score.dat");
