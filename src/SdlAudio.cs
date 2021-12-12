@@ -79,7 +79,7 @@ namespace MiswGame2008
 
         public void PlaySound(Sound sound)
         {
-            sounds[(int)sound].Play();
+            //sounds[(int)sound].Play();
         }
 
         public void PlayMusic(Music music)

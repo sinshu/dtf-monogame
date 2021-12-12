@@ -10,6 +10,8 @@ namespace MiswGame2008
         private MiswGame2008 app;
 
         private Texture2D[] textures;
+        private Texture2D singlePixelWhite;
+        private RenderTarget2D renderTarget;
         private SpriteBatch sprite;
 
         private Color color;
@@ -32,6 +34,11 @@ namespace MiswGame2008
                 Console.WriteLine("OK");
             }
 
+            singlePixelWhite = new Texture2D(app.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
+            singlePixelWhite.SetData(new uint[] { 0xFFFFFFFF });
+
+            renderTarget = new RenderTarget2D(app.GraphicsDevice, 640, 480);
+
             sprite = new SpriteBatch(app.GraphicsDevice);
 
             color = Color.White;
@@ -44,6 +51,8 @@ namespace MiswGame2008
 
         public void Begin()
         {
+            app.GraphicsDevice.SetRenderTarget(renderTarget);
+
             sprite.Begin(SpriteSortMode.Immediate,
                 BlendState.AlphaBlend,
                 SamplerState.PointClamp,
@@ -56,61 +65,81 @@ namespace MiswGame2008
         public void End()
         {
             sprite.End();
+
+            app.GraphicsDevice.SetRenderTarget(null);
+
+            sprite.Begin(SpriteSortMode.Immediate,
+                BlendState.Opaque,
+                SamplerState.PointClamp,
+                null,
+                null,
+                null,
+                null);
+
+            var windowWidth = app.GraphicsDevice.PresentationParameters.BackBufferWidth;
+            var windowHeight = app.GraphicsDevice.PresentationParameters.BackBufferHeight;
+
+            sprite.Draw(
+                renderTarget,
+                new Rectangle(0, 0, windowWidth, windowHeight),
+                Color.White);
+
+            sprite.End();
         }
 
         public void EnableAddBlend()
         {
-            //screen.BlendAddColor();
+            sprite.End();
+            sprite.Begin(SpriteSortMode.Immediate,
+                BlendState.Additive,
+                SamplerState.PointClamp,
+                null,
+                null,
+                null,
+                null);
         }
 
         public void DisableAddBlend()
         {
-            //screen.BlendSrcAlpha();
+            sprite.End();
+            sprite.Begin(SpriteSortMode.Immediate,
+                BlendState.AlphaBlend,
+                SamplerState.PointClamp,
+                null,
+                null,
+                null,
+                null);
         }
 
         public void SetColor(int a, int r, int g, int b)
         {
-            color = new Color(r, g, b, a);
+            color = new Color(r, g, b) * (a / 255F);
         }
 
         public void Fill()
         {
-            /*
-            int x1 = 0, y1 = 0;
-            int x2 = width, y2 = 0;
-            int x3 = width, y3 = height;
-            int x4 = 0, y4 = height;
-            screen.DrawPolygon(x1, y1, x2, y2, x3, y3, x4, y4);
-            */
+            sprite.Draw(
+                singlePixelWhite,
+                new Rectangle(0, 0, 640, 480),
+                color);
         }
 
         public void DrawRectangle(int x, int y, int width, int height)
         {
-            /*
-            int x1 = x, y1 = y;
-            int x2 = x + width, y2 = y;
-            int x3 = x + width, y3 = y + height;
-            int x4 = x, y4 = y + height;
-            screen.DrawPolygon(x1, y1, x2, y2, x3, y3, x4, y4);
-            */
+            sprite.Draw(
+                singlePixelWhite,
+                new Rectangle(x, y, width, height),
+                new Rectangle(0, 0, 1, 1),
+                color);
         }
 
         public void DrawImage(Image image, int x, int y)
         {
-            //screen.Blt(textures[(int)image], x, y);
             sprite.Draw(textures[(int)image], new Vector2(x, y), color);
         }
 
         public void DrawImage(Image image, int x, int y, int width, int height, int row, int col)
         {
-            /*
-            int left = width * col;
-            int top = height * row;
-            int right = left + width;
-            int bottom = top + height;
-            Rect srcRect = new Rect((float)left, (float)top, (float)right, (float)bottom);
-            screen.Blt(textures[(int)image], x, y, srcRect);
-            */
             sprite.Draw(
                 textures[(int)image],
                 new Rectangle(x, y, width, height),
@@ -129,6 +158,16 @@ namespace MiswGame2008
             int yaneRad = -(int)Math.Round((double)(deg * 512) / 360);
             screen.BltRotate(textures[(int)image], x, y, srcRect, yaneRad, 1.0f, width / 2, height / 2);
             */
+
+            sprite.Draw(
+                textures[(int)image],
+                new Rectangle(x + width / 2, y + height / 2, width, height),
+                new Rectangle(width * col, height * row, width, height),
+                color,
+                -MathF.PI * deg / 180F,
+                new Vector2(width / 2, height / 2),
+                SpriteEffects.None,
+                0);
         }
 
         public void DrawImage(Image image, int x, int y, int width, int height, int row, int col, int deg, double stretch)
@@ -142,6 +181,16 @@ namespace MiswGame2008
             int yaneRad = -(int)Math.Round((double)(deg * 512) / 360);
             screen.BltRotate(textures[(int)image], x, y, srcRect, yaneRad, (float)stretch, 0, 0);
             */
+
+            sprite.Draw(
+                textures[(int)image],
+                new Rectangle(x + width / 2, y + height / 2, width, height),
+                new Rectangle(width * col, height * row, width, height),
+                color,
+                -MathF.PI * deg / 180F,
+                new Vector2(width / 2, height / 2),
+                SpriteEffects.None,
+                0);
         }
 
         public void DrawObject(Image image, int x, int y, int width, int height, int row, int col, int deg)
@@ -155,6 +204,16 @@ namespace MiswGame2008
             int yaneRad = -(int)Math.Round((double)(deg * 512) / 360);
             screen.BltRotate(textures[(int)image], x - width / 2, y - height / 2, srcRect, yaneRad, 1.0f, width / 2, height / 2);
             */
+
+            sprite.Draw(
+                textures[(int)image],
+                new Rectangle(x, y, width, height),
+                new Rectangle(width * col, height * row, width, height),
+                color,
+                -MathF.PI * deg / 180F,
+                new Vector2(width / 2, height / 2),
+                SpriteEffects.None,
+                0);
         }
 
         public void DrawBullet(Image image, int x, int y, int width, int height, int row, int col, int deg)
@@ -168,6 +227,16 @@ namespace MiswGame2008
             int yaneRad = -(int)Math.Round((double)(deg * 512) / 360);
             screen.BltRotate(textures[(int)image], x - width, y - height / 2, srcRect, yaneRad, 1.0f, width, height / 2);
             */
+
+            sprite.Draw(
+                textures[(int)image],
+                new Rectangle(x, y, width, height),
+                new Rectangle(width * col, height * row, width, height),
+                color,
+                -MathF.PI * deg / 180F,
+                new Vector2(width, height / 2),
+                SpriteEffects.None,
+                0);
         }
 
         public void DrawBackground(Image image, int x, int y, int width, int height, int row, int col, double stretch)
@@ -185,6 +254,12 @@ namespace MiswGame2008
             points[3] = new Point((float)x, (float)((y + height) * stretch));
             screen.Blt(textures[(int)image], srcRect, points);
             */
+
+            sprite.Draw(
+                textures[(int)image],
+                new Rectangle(x, (int)(y * stretch), width, (int)(height * stretch)),
+                new Rectangle(width * col, height * row, width, height),
+                color);
         }
 
         public void DrawCharacter(char c, int x, int y)
@@ -254,6 +329,18 @@ namespace MiswGame2008
             {
                 sprite.Dispose();
                 sprite = null;
+            }
+
+            if (renderTarget != null)
+            {
+                renderTarget.Dispose();
+                renderTarget = null;
+            }
+
+            if (singlePixelWhite != null)
+            {
+                singlePixelWhite.Dispose();
+                singlePixelWhite = null;
             }
 
             if (textures != null)

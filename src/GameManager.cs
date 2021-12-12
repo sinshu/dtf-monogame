@@ -256,7 +256,7 @@ namespace MiswGame2008
             }
             catch (IOException)
             {
-                Console.WriteLine("スコアデータの読み込みに失敗しました。");
+                Console.WriteLine("Faild to read high scores!");
                 return;
             }
             TopPlayerInfo[] data;
@@ -271,13 +271,13 @@ namespace MiswGame2008
             }
             catch (Exception)
             {
-                Console.WriteLine("スコアデータのフォーマットがおかしいっぽいです。");
+                Console.WriteLine("Invalid high score data!");
                 reader.Close();
                 return;
             }
             reader.Close();
             top10Players = data;
-            Console.WriteLine("スコアデータの読み込みが正常に終了しました。");
+            Console.WriteLine("Loaded the high scores.");
         }
 
         public void SaveScoreDataToFile(string path)
@@ -289,7 +289,7 @@ namespace MiswGame2008
             }
             catch (IOException)
             {
-                Console.WriteLine("スコアデータの書き込みに失敗しました。");
+                Console.WriteLine("Faild to write the high score data!");
                 return;
             }
             try
@@ -302,12 +302,12 @@ namespace MiswGame2008
             }
             catch (IOException)
             {
-                Console.WriteLine("スコアデータ＼(^o^)／");
+                Console.WriteLine("Faild to write the high score data!");
                 writer.Close();
                 return;
             }
             writer.Close();
-            Console.WriteLine("スコアデータの書き込みが正常に終了しました。");
+            Console.WriteLine("Saved the high scores.");
         }
 
         public bool Exiting

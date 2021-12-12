@@ -24,9 +24,14 @@ namespace MiswGame2008
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = 640;
-            graphics.PreferredBackBufferHeight = 480;
+            var display = graphics.GraphicsDevice.DisplayMode;
+
+            graphics.PreferredBackBufferWidth = display.Width;
+            graphics.PreferredBackBufferHeight = display.Height;
+            graphics.IsFullScreen = true;
             graphics.ApplyChanges();
+
+            TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 30);
 
             base.Initialize();
         }
@@ -70,7 +75,13 @@ namespace MiswGame2008
 
         protected override void Update(GameTime gameTime)
         {
+            input.Update();
             manager.Update(input);
+
+            if (manager.Exiting)
+            {
+                Exit();
+            }
         }
 
         protected override void Draw(GameTime gameTime)
